@@ -25,7 +25,7 @@ jobs:
           python-version: 3.8
           
       - name: Test with Checkov for docker scan
-        uses: bridgecrewio/checkov-action@v2.2.15
+        uses: bridgecrewio/checkov-action@v2.0.930
         with:
           directory: .
           framework: dockerfile
