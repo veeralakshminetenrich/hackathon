@@ -1,50 +1,44 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
----
-name: Checkov
 on:
   push:
     branches:
-      - main
+      - master
+    tags:
+      - "v*-hello-world"
+  pull_request:
+    branches:
+      - 'master'
+
 jobs:
-  build:
+  deploy-docker-hello-world:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          python-version: 3.8
-          
-      - name: Test with Checkov for docker scan
-        uses: bridgecrewio/checkov-action@v12.1347.0
+          images: ghcr.io/thedatabaseme/hello-world
+          flavor: latest=true
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+
+      - name: Login to image repository
+        if: github.ref_type == 'tag'
+        uses: docker/login-action@v2
         with:
-          directory: .
-          framework: dockerfile
-        continue-on-error: true
-          
-      - name: Build and push
-        id: gen_tags
-        run: |
-         if [[ $GITHUB_REF == 'refs/tags/'* ]]; then
-         TAGS='["user/image:latest","user/image:'${GITHUB_REF/refs\/tags\//}'"]'
-         else
-         TAGS='["user/image:latest"]'
-         fi
-         echo '::set-output name=tags::'$TAGS
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
-           context: .
-           push: true
-           tags: ${{ fromJson(steps.gen_tags.outputs.tags) }}
+          context: .
+          directory: .
+          push: ${{ github.ref_type == 'tag' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
