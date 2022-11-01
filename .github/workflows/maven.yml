@@ -1,19 +1,28 @@
+name: Checkov
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - "v*-hello-world"
-  pull_request:
-    branches:
-      - 'master'
-
 jobs:
-  deploy-docker-hello-world:
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+          
+      - name: Test with Checkov for docker scan
+        uses: bridgecrewio/checkov-action@v12.1347.0
+        with:
+          directory: .
+          framework: dockerfile
+        continue-on-error: true
 
       - name: Docker meta
         id: meta
@@ -39,6 +48,7 @@ jobs:
         with:
           context: .
           directory: .
+          framework: dockerfile
           push: ${{ github.ref_type == 'tag' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
