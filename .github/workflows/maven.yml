@@ -29,6 +29,7 @@ jobs:
         with:
           directory: .
           framework: dockerfile
+        continue-on-error: true
           
       - name: Build and push
         id: gen_tags
