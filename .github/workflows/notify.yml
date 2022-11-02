@@ -2,10 +2,7 @@ name: CI notify
 
 # Only trigger, when the build workflow succeeded
 on:
-  workflow_run:
-    workflows: ["Checkov"]
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
   notify:
@@ -16,4 +13,17 @@ jobs:
 
       - name: Notify Slack and send eMail
         run: echo "Hello"
+      
+      - name: Check CI
+        id: check-ci
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: build.yml
+          event: push
+          branch: main
+          
+      - name: Release
+        if: ${{ steps.check-ci.outputs.conclusion == 'success' }}
+        
         
