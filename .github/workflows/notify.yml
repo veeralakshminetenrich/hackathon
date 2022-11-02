@@ -2,10 +2,7 @@ name: CI notify
 
 # Only trigger, when the build workflow succeeded
 on:
-  workflow_run:
-    workflows: ["Checkov"]
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
   notify:
