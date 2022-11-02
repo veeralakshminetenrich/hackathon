@@ -10,9 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Notify Slack and send eMail
-        run: echo "Hello"
       
       - name: Check CI
         id: check-ci
@@ -24,6 +21,6 @@ jobs:
           branch: main
           
       - name: Release
-        if: ${{ steps.check-ci.outputs.conclusion == 'success' }}
+        run: echo ${{ steps.check-ci.outputs.conclusion }}
         
         
