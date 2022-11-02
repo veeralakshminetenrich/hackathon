@@ -27,7 +27,6 @@ jobs:
           
       - name: Test with Checkov for docker scan
         uses: bridgecrewio/checkov-action@v12.1347.0
-        continue-on-error: true
         with:
           directory: .
           framework: dockerfile
