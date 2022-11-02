@@ -1,13 +1,32 @@
-name: CI build
 
-on: [push]
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+---
+name: Checkov
+on:
+  push:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Deploy Docker image to Google Cloud Run
-      run: echo "Hi"
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+          
+      - name: Test with Checkov for docker scan
+        uses: bridgecrewio/checkov-action@v12.1347.0
+        with:
+          directory: .
+          framework: dockerfile
