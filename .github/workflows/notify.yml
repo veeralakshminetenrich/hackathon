@@ -2,26 +2,18 @@ name: CI notify
 
 # Only trigger, when the build workflow succeeded
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: [Checkov]
+    types: [completed]
 
 jobs:
-  notify:
+  on-success:
     runs-on: ubuntu-latest
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Check CI
-        id: check-ci
-        uses: LASER-Yi/workflow-status@v0.0.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build.yml
-          event: push
-          branch: main
-          
-      - name: Release
-        if: ${{ steps.check-ci.outputs.conclusion == "success" }}
-        run: echo "Success"
-        
-        
+      - run: echo 'The triggering workflow passed'
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
