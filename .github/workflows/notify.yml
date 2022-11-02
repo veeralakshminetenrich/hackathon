@@ -25,6 +25,5 @@ jobs:
           
       - name: Release
         if: ${{ steps.check-ci.outputs.conclusion == "success" }}
-        run: echo ${{ steps.check-ci.outputs.conclusion }}
         
         
