@@ -1,54 +1,18 @@
-name: Checkov
+name: CI notify
+
+# Only trigger, when the build workflow succeeded
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - "v*-hello-world"
+  workflow_run:
+    workflows: ["CI build"]
+    types:
+      - completed
+
 jobs:
-  build:
+  notify:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-          
-      - name: Test with Checkov for docker scan
-        uses: bridgecrewio/checkov-action@v12.1347.0
-        with:
-          directory: .
-          framework: dockerfile
-        continue-on-error: true
+      - uses: actions/checkout@v2
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/thedatabaseme/hello-world
-          flavor: latest=true
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-
-      - name: Login to image repository
-        if: github.ref_type == 'tag'
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          directory: .
-          framework: dockerfile
-          push: ${{ github.ref_type == 'tag' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Notify Slack and send eMail
+        run: echo "Hi was succeeded"
