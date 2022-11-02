@@ -24,6 +24,6 @@ jobs:
           branch: main
           
       - name: Release
-        run: echo ${{ steps.check-ci.outputs.conclusion }}
+        if: ${{ steps.check-ci.outputs.conclusion == "success" }}
         
         
