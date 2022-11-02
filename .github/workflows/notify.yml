@@ -5,7 +5,7 @@ on:
   workflow_run:
     workflows: ["Checkov"]
     types:
-      - completed
+      - success
 
 jobs:
   notify:
@@ -16,3 +16,4 @@ jobs:
 
       - name: Notify Slack and send eMail
         run: echo "Hello"
+        
