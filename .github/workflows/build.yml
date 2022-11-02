@@ -9,5 +9,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Testing two files
-      run: echo "HI"
+    - name: Deploy Docker image to Google Cloud Run
+      run: echo "Hi"
