@@ -15,4 +15,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Notify Slack and send eMail
-        run: echo "Hi was succeeded"
+        run: echo "Hello"
