@@ -20,12 +20,13 @@ jobs:
   
   success:
     name: One with everything
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@master
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@master
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        if: always()
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           needs: ${{ toJson(needs) }}
