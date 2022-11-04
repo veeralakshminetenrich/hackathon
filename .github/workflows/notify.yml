@@ -21,7 +21,7 @@ jobs:
   success:
     name: One with everything
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - uses: actions/checkout@master
       - name: Microsoft Teams Notification
@@ -29,7 +29,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
           ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          notification-summary: Build succeeded
+          notification-summary: Build failed
           notification-color: 17a2b8
           timezone: Asia/Kolkata
 
